@@ -112,6 +112,7 @@ public class Main {
 	}
 	static void readGraph(String graphFileName) throws FileNotFoundException, IOException {
 		br=new BufferedReader(new FileReader(graphFileName));
+		ll=new LinkedList<Integer>();
 		while (true){
 			String linea=br.readLine();
 			if (linea==null) break;
