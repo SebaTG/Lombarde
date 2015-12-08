@@ -1,0 +1,12 @@
+opr1 opr2 9
+opr1 opr3 1
+opr2 opr4 9
+opr2 opr5 1
+opr3 opr5 3
+opr3 opr6 3
+opr4 opr7 9
+opr5 opr7 3
+opr5 opr8 3
+opr6 opr8 1
+opr7 opr9 1
+opr8 opr9 9

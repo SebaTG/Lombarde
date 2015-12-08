@@ -1,0 +1,3 @@
+opr1 opr2 1
+opr6 opr9 1
+opr7 opr8 1
