@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
  * @author Sebastian Tapia
  *
  */
-public class Main {
+public class Extended {
 	static int n;
 	static ArrayList<Integer>[] graph;
 	static ArrayList<Integer>[] costos;
@@ -31,16 +31,13 @@ public class Main {
 		foundManyNodes(graphFileName);
 		foundManyNodes(validatedFileName);
 		initializeTrn();
-		readGraph(graphFileName);
+		readGraph(graphFileName,validatedFileName);
 		floydWarshall();
-		int NonCoexp = lombardeGraph(coexpresedFileName);
-		int YesValid = validatedArcs(validatedFileName);
+		int res = lombardeGraph(coexpresedFileName);
 		prepareToPrint();
-		System.out.println("cantidad de coexpresiones no explicadas: "+NonCoexp);
-		System.out.println("cantidad de arcos validados usados: "+YesValid);
+		System.out.println("la cantidad de coexpresiones no explicadas: "+res);
 		System.out.print(sb);
 	}
-	
 	static void prepareToPrint() {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -57,39 +54,15 @@ public class Main {
 		}
 	}
 	/**
-	 * Cuenta cuantos arcos validados se encuentran en el grafo de Lombarde
-	 * @param validatedFileName archivo con los validados
-	 * @return cantidad de arcos validados en el grafo de Lombarde
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	static int validatedArcs(String validatedFileName) throws FileNotFoundException, IOException {
-		int YesValid=0;
-		br=new BufferedReader(new FileReader(validatedFileName));
-		while (true){
-			String linea=br.readLine();
-			if (linea==null) break;
-			st=new StringTokenizer(linea);
-			int a=Integer.parseInt(st.nextToken().substring(3))-1;
-			int b=Integer.parseInt(st.nextToken().substring(3))-1;
-			if (present[a][b]){
-				YesValid++;
-			}
-		}
-		br.close();
-		return YesValid;
-	}
-
-	/**
 	 * Aplica el algoritmo de Lombarde
 	 * @param coexpresedFileName archivo con las coexpresiones
-	 * @return la cantidad de pares coexpresados sin explicacion
+	 * @return la cantidad de veces que no hizo nada
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
 	static int lombardeGraph(String coexpresedFileName) throws FileNotFoundException, IOException {
 		br=new BufferedReader(new FileReader(coexpresedFileName));
-		int NonCoexp=0;
+		int res=0;
 		while (true){
 			String linea=br.readLine();
 			if (linea==null) break;
@@ -97,7 +70,7 @@ public class Main {
 			int a=Integer.parseInt(st.nextToken().substring(3))-1;
 			int b=Integer.parseInt(st.nextToken().substring(3))-1;
 			if (distances[b+n][a]<0){
-				NonCoexp++;
+				res++;
 			}
 			else{
 				int d=distances[b+n][a];
@@ -123,7 +96,7 @@ public class Main {
 				}
 			}
 		}
-		return NonCoexp;
+		return res;
 	}
 	static void floydWarshall() {
 		int largo=2*n;
@@ -141,7 +114,7 @@ public class Main {
 			}
 		}
 	}
-	static void readGraph(String graphFileName) throws FileNotFoundException, IOException {
+	static void readGraph(String graphFileName, String validatedFileName) throws FileNotFoundException, IOException {
 		br=new BufferedReader(new FileReader(graphFileName));
 		ll=new LinkedList<Integer>();
 		while (true){
@@ -155,8 +128,27 @@ public class Main {
 			ll.add(b);
 			graph[a].add(b);
 			costos[a].add(c);
-			graph[n+b].add(n+a);
+			graph[n+b].add(a);
 			costos[n+b].add(c);
+			distances[a][b]=c;
+			distances[n+b][n+a]=c;
+			matrix[a][b]=c;
+		}
+		br.close();
+		br=new BufferedReader(new FileReader(validatedFileName));
+		while (true){
+			String linea=br.readLine();
+			if (linea==null) break;
+			st=new StringTokenizer(linea);
+			int a=Integer.parseInt(st.nextToken().substring(3))-1;
+			int b=Integer.parseInt(st.nextToken().substring(3))-1;
+			int c=Integer.parseInt(st.nextToken());
+			ll.add(a);
+			ll.add(b);
+			graph[a].add(b);
+			costos[a].add(1);
+			graph[n+b].add(a);
+			costos[n+b].add(1);
 			distances[a][b]=c;
 			distances[n+b][n+a]=c;
 			matrix[a][b]=c;
